@@ -15,8 +15,8 @@ def threshold_range(im, lo, hi):
     unused, t2 = cv2.threshold(im, hi, 255, type=cv2.THRESH_BINARY_INV)
     return cv2.bitwise_and(t1, t2)
 
-#no pictures for 34-54
-img = cv2.imread('RealFullField/28.jpg')
+#no pictures for 34-54, 10
+img = cv2.imread('RealFullField/79.jpg')
 cv2.imshow('image', img)
 
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -57,26 +57,32 @@ for contour in ncontours:
     cv2.drawContours(img,[box],0,(0, 255, 0),1)
 
     perim = cv2.arcLength(contour, True)
-    print 'primy', perim
+    print 'prim 1- ', perim
 
     box = cv2.cv.BoxPoints(rect)
     temp1 = box[0]
     temp2 = box[1]
     temp3 = box[3]
-    print "boxy 1", temp3
-    print "boxy 2", temp1
+    print "temp 1 - ", temp1
+    print "temp 2 - ", temp2
+    print "temp 3 - ", temp3
     rectL = math.sqrt(((temp2[1]-temp1[1])**2)+((temp2[0]-temp1[0])**2))
     rectW = math.sqrt(((temp3[1]-temp1[1])**2)+((temp3[0]-temp1[0])**2))
-    print 'widthy', rectW
+    print 'width - ', rectW
     rectP = rectL*2+rectW*2
     perim -= 2*rectW
-    print 'primy two', perim
+    print 'prim 2 - ', perim
+    print 'prim 3 - ', abs(perim - 4*rectL)
+    print 'prim 4 - ', cv2.contourArea(contour)
+    print 'rectA - ', rectL*rectW
+    rectA = rectL*rectW
+    print 'rectL - ', rectL
+    print 'rectP - ', rectP
 
-    print 'rectLy', rectL
-
-    if(abs(perim - 4*rectL) < 1):
+    if(abs(cv2.contourArea(contour)/rectA - .3) < .05):
         ucontours.append(contour)
 
+print 'ucontours - ', len(ucontours)
 cv2.drawContours(img, ucontours, -1, (200,0,255), 3)
 
 cv2.imshow('image', img)
